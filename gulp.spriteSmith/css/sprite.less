@@ -1,0 +1,132 @@
+/*
+LESS variables are information about icon's compiled state, stored under its original file name
+
+.icon-home {
+  width: @icon-home-width;
+}
+
+The large array-like variables contain all information about a single icon
+@icon-home: x y offset_x offset_y width height total_width total_height image_path name;
+
+At the bottom of this section, we provide information about the spritesheet itself
+@spritesheet: width height image @spritesheet-sprites;
+*/
+@admin-name: 'admin';
+@admin-x: 0px;
+@admin-y: 0px;
+@admin-offset-x: 0px;
+@admin-offset-y: 0px;
+@admin-width: 15px;
+@admin-height: 15px;
+@admin-total-width: 89px;
+@admin-total-height: 244px;
+@admin-image: './../img/sprites.png';
+@admin: 0px 0px 0px 0px 15px 15px 89px 244px './../img/sprites.png' 'admin';
+@android-name: 'android';
+@android-x: 0px;
+@android-y: 20px;
+@android-offset-x: 0px;
+@android-offset-y: -20px;
+@android-width: 38px;
+@android-height: 46px;
+@android-total-width: 89px;
+@android-total-height: 244px;
+@android-image: './../img/sprites.png';
+@android: 0px 20px 0px -20px 38px 46px 89px 244px './../img/sprites.png' 'android';
+@cell-study-name: 'cell-study';
+@cell-study-x: 0px;
+@cell-study-y: 155px;
+@cell-study-offset-x: 0px;
+@cell-study-offset-y: -155px;
+@cell-study-width: 89px;
+@cell-study-height: 89px;
+@cell-study-total-width: 89px;
+@cell-study-total-height: 244px;
+@cell-study-image: './../img/sprites.png';
+@cell-study: 0px 155px 0px -155px 89px 89px 89px 244px './../img/sprites.png' 'cell-study';
+@crop-ques-name: 'crop-ques';
+@crop-ques-x: 0px;
+@crop-ques-y: 71px;
+@crop-ques-offset-x: 0px;
+@crop-ques-offset-y: -71px;
+@crop-ques-width: 58px;
+@crop-ques-height: 79px;
+@crop-ques-total-width: 89px;
+@crop-ques-total-height: 244px;
+@crop-ques-image: './../img/sprites.png';
+@crop-ques: 0px 71px 0px -71px 58px 79px 89px 244px './../img/sprites.png' 'crop-ques';
+@spritesheet-width: 89px;
+@spritesheet-height: 244px;
+@spritesheet-image: './../img/sprites.png';
+@spritesheet-sprites: @admin @android @cell-study @crop-ques;
+@spritesheet: 89px 244px './../img/sprites.png' @spritesheet-sprites;
+
+/*
+The provided classes are intended to be used with the array-like variables
+
+.icon-home {
+  .sprite-width(@icon-home);
+}
+.icon-email {
+  .sprite(@icon-email);
+}
+
+Example usage in HTML:
+
+`display: block` sprite:
+<div class="icon-home"></div>
+
+To change `display` (e.g. `display: inline-block;`), we suggest using a common CSS class:
+
+// CSS
+.icon {
+  display: inline-block;
+}
+
+// HTML
+<i class="icon icon-home"></i>
+*/
+.sprite-width(@sprite) {
+  width: extract(@sprite, 5);
+}
+
+.sprite-height(@sprite) {
+  height: extract(@sprite, 6);
+}
+
+.sprite-position(@sprite) {
+  @sprite-offset-x: extract(@sprite, 3);
+  @sprite-offset-y: extract(@sprite, 4);
+  background-position: @sprite-offset-x @sprite-offset-y;
+}
+
+.sprite-image(@sprite) {
+  @sprite-image: extract(@sprite, 9);
+  @sprite-image-bare: ~`"@{sprite-image}".slice(1, -1)`;
+  background-image: url(@sprite-image-bare);
+}
+
+.sprite(@sprite) {
+  .sprite-image(@sprite);
+  .sprite-position(@sprite);
+  .sprite-width(@sprite);
+  .sprite-height(@sprite);
+}
+
+/*
+The `.sprites` mixin generates identical output to the CSS template
+  but can be overridden inside of LESS
+
+This must be run when you have at least 2 sprites.
+  If run with a single sprite, then there will be reference errors.
+
+.sprites(@spritesheet-sprites);
+*/
+.sprites(@sprites, @i: 1) when (@i <= length(@sprites)) {
+  @sprite: extract(@sprites, @i);
+  @sprite-name: e(extract(@sprite, 10));
+  .@{sprite-name} {
+    .sprite(@sprite);
+  }
+  .sprites(@sprites, @i + 1);
+}
