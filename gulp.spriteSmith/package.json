@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "file-loader": "^0.10.1"
+  }
+}
